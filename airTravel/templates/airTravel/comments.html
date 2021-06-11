@@ -1,7 +1,7 @@
 {% extends 'base.html'%}
 {% block content %}
     <h3 class="title-comments">Авиарейс</h3>
-    <div class="card mb-md-5" style="background-color: #edefff;">
+    <div class="card mb-md-5" style="background-color: #ffffff;">
         <div class="card-body" >
             <h6 class="display-5 ">{{ flight.date_of_departure }} - {{ flight.arrival_date }}</h6>
             <blockquote class="blockquote">
@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <h3 class="title-comments">Комментарии</h3>
+    <h5 class="title-comments">Комментарии</h5>
     <hr>
         {% for comment in comments %}
     <div class="p-2 bg-light border mb-4">

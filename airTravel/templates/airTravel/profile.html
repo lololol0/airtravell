@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% if request.user.is_authenticated %}
+        <h2>Персональные данные</h2>
+         <hr>
+        <ul><a>Пользователь: {{ request.user.username }}</a></ul>
+        <ul><a>Email: {{ request.user.email }}</a></ul>
+        <div>
+        <h2>Регистрации</h2>
+        <hr>
+            {% for booking in bookings %}
+        {% if booking.user|upper == request.user.username|upper %}
+        <table class="table">
+            <thead>
+                <tr>
+                  <th scope="col">Имя</th>
+                  <th scope="col">Фамилия</th>
+                  <th scope="col">Место</th>
+                  <th scope="col">Рейс</th>
+                </tr>
+            <tbody>
+
+                    <tr>
+                        <td>{{ booking.name }}</td>
+                        <td>{{ booking.surname }}</td>
+                        <td>{{ booking.place }}</td>
+                        <td>{{ booking.plane }}</td>
+                        <td><a href="edit/{{booking.id}}">Изменить</a> | <a href="delete/{{booking.id}}">Удалить</a></td>
+                    </tr>
+            </tbody>
+        </table>
+        {% endif %}
+                        {% endfor %}
+
+        </div>
+    {% endif %}
+{% endblock %}

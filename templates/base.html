@@ -9,24 +9,31 @@
         {% endblock %}
     </title>
 </head>
-<body style="background-color: #edefff;">
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #9bb7ff;">
-  <a class="navbar-brand">AirTravel</a>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #000000;">
+        <a class="navbar-brand text-white">AirTravel</a>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="{% url 'post_info_url'%}">Авиарейсы</a>
+        <a class="nav-link text-white" href="{% url 'post_info_url'%}">Авиарейсы</a>
       </li>
+        <li>
+            <form class="d-flex" action="{% url 'search_results' %}" method="get">
+              <input class="form-control me-2 ml-4" name="q" type="text" placeholder="Поиск авиакомпании...">
+            </form>
+        </li>
     </ul>
     <form class="form-inline my-2 my-lg-0">
-       <span class="user">
+       <span class="user text-white">
         {% if request.user.is_authenticated %}
-            Привет {{ request.user.username }}
-            <i class="fas fa-hand-spock" style="color: #ffb500;"></i>,
-            <a href="{% url "logout" %}">Logout</a>
+            Привет <a href="{% url "profile" %}">{{ request.user.username }}</a>
+            <i class="fas fa-hand-spock" style="color: #ffffff;"></i>
+            <a href="{% url "logout" %}" class="btn btn-outline-light">Logout</a>
         {% else %}
-            <a href="{% url "login" %}">Log-in</a>
+            <a href="{% url "login" %}" class="btn btn-outline-light">Sign in</a>
+            <a href="{% url "register" %}" class="btn btn-outline-light">Sign up</a>
         {% endif %}
     </span>
     </form>
@@ -34,9 +41,11 @@
 </nav>
 <div class="container mt-5">
     <div class="row">
-        <div class="col-6 offset-md-2">
+        <div class="col-6 offset-md-3">
+
             {% block content %}
             {% endblock %}
+            </div>
         </div>
     </div>
 </div>

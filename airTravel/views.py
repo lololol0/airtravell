@@ -1,9 +1,28 @@
+import copy
+
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
+from django.db.models import Q
+from django.views.generic import ListView
 
 from .models import Booking, Schedule, Comments
 from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponse
 from .forms import LoginForm, UserRegistrationForm, CommentForm, ReverseForm
+
+place_in_plane = ['A01', 'A02', 'A03', 'A04', 'B01', 'B02', 'B03', 'B04', 'C01', 'C02', 'C03', 'C04',
+                  'D01', 'D02', 'D03', 'D04']
+
+
+class SearchResultsView(ListView):
+    model = Schedule
+    template_name = 'airTravel/search_results.html'
+
+    def get_queryset(self):  # новый
+        query = self.request.GET.get('q')
+        object_list = Schedule.objects.filter(
+            Q(airline_company__icontains=query) | Q(date_of_departure__icontains=query)
+        )
+        return object_list
 
 
 # Create your views here.
@@ -16,7 +35,7 @@ def post(request):
 def index(request, id):
     try:
         plane = Schedule.objects.get(id=id)
-        bookings = Booking.objects.filter(plane=id, moderation=True)
+        bookings = Booking.objects.filter(plane=id)
         if request.method == "POST":
             rev = ReverseForm(request.POST)
             if rev.is_valid():
@@ -30,8 +49,7 @@ def index(request, id):
                 url = f'/reserve/{str(id)}'
                 return HttpResponseRedirect(url)
         else:
-            value = ['A01', 'A02', 'A03', 'A04', 'B01', 'B02', 'B03', 'B04', 'C01', 'C02', 'C03', 'C04',
-                     'D01', 'D02', 'D03', 'D04']
+            value = copy.deepcopy(place_in_plane)
             rev = ReverseForm()
             posts = Booking.objects.filter(plane=id)
             p = []
@@ -50,32 +68,49 @@ def index(request, id):
         return HttpResponseNotFound("<h2>Comments not found</h2>")
 
 
+def profile_user(request):
+    bookings = Booking.objects.all()
+    return render(request, 'airTravel/profile.html', {"bookings": bookings})
+
+
 # изменение данных в бд
-def edit(request, pk, id):
+def edit(request, pk):
     try:
-        page = Schedule.objects.get(id=id)
         booking = Booking.objects.get(id=pk)
+        id_plane_booking = booking.plane_id
 
         if request.method == "POST":
             booking.name = request.POST.get("name")
             booking.surname = request.POST.get("surname")
             booking.place = request.POST.get("place")
             booking.save()
-            url = f'/reserve/{str(id)}'
+            url = f'/profile/'
             return HttpResponseRedirect(url)
         else:
-            return render(request, "airTravel/edit.html", {"booking": booking})
+            value = copy.deepcopy(place_in_plane)
+            place = Booking.objects.filter(plane=id_plane_booking)
+
+            new_p = []
+            for number in place:
+                new_p.append(number.place)
+            for j in new_p:
+                for i in range(len(value) - 1):
+                    if j == value[i]:
+                        del value[i]
+
+            return render(request, "airTravel/edit.html", {"booking": booking,
+                                                           "value": value})
     except Booking.DoesNotExist:
         return HttpResponseNotFound("<h2>Person not found</h2>")
 
 
 # удаление данных из бд
-def delete(request, pk, id):
+def delete(request, pk):
     try:
-        page = Schedule.objects.get(id=id)
+        # page = Schedule.objects.get(id=id)
         booking = Booking.objects.get(id=pk)
         booking.delete()
-        url = f'/reserve/{str(id)}'
+        url = f'/profile/'
         return HttpResponseRedirect(url)
     except Booking.DoesNotExist:
         return HttpResponseNotFound("<h2>Person not found</h2>")
@@ -95,7 +130,8 @@ def user_login(request):
                 else:
                     return HttpResponse('Disabled account')
             else:
-                return HttpResponse('Invalid login')
+                form_err = LoginForm()
+                return render(request, 'airTravel/error_login.html', {'form_err': form_err})
     else:
         form = LoginForm()
     return render(request, 'airTravel/login.html', {'form': form})

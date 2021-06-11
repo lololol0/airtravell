@@ -3,11 +3,34 @@
 {% block title %}Create an account{% endblock %}
 
 {% block content %}
-    <h1>Create an account</h1>
-    <p>Please, sign up using the following form:</p>
-    <form action="." method="post">
-        {{ user_form.as_p }}
-        {% csrf_token %}
-        <p><input type="submit" value="Create my account"></p>
-    </form>
+    <div class="col-10 offset-md-1 mb-4">
+    <p class="h6 text-muted">Пожалуйста, зарегистрируйтесь, используя следующую форму:</p>
+        <div class="card col align-self-center">
+              <div class="card-header">
+            <h1>Create an account</h1>
+            <form action="." method="post">
+                <div class="form-group">
+                    <label for="exampleInputUsername">Username</label>
+                    <input class="form-control" id="exampleInputUsername" placeholder="Username" name="username">
+                </div>
+                <div class="mb-3">
+                  <label for="exampleFormControlInput1" class="form-label">Email address</label>
+                  <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" name="email">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" name="password">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Repeat password</label>
+                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Repeat password" name="password2">
+                </div>
+                {% csrf_token %}
+                <div class="col-6 mx-auto">
+                    <p><input type="submit" class="btn btn-primary" value="Create my account"></p>
+                </div>
+            </form>
+              </div>
+        </div>
+    </div>
 {% endblock %}

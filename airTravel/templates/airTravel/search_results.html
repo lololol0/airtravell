@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div>
+        <h5>Результаты поиска</h5>
+    </div>
+{% for obj in object_list %}
+            <div class="card mb-4">
+          <div class="card-header">
+            {{ obj.date_of_departure }} - {{ obj.arrival_date }}
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">{{ obj.airline_company }}</h5>
+            <p class="card-text">{{ obj.flight_number }}</p>
+            <a href="reserve/{{obj.id}}" class="btn btn-light">Регистрация</a>
+            <a href="comments/{{obj.id}}" class="btn btn-light">Комментарии</a>
+          </div>
+        </div>
+{% endfor %}
+
+{% endblock %}
